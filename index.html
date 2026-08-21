@@ -1,161 +1,246 @@
 <!doctype html>
-<html lang="en">
+<html lang="it">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#173f35">
-    <meta name="description" content="A simple local property management dashboard.">
-    <title>Haven Property Manager</title>
+    <meta name="theme-color" content="#f6f6f4">
+    <meta name="description" content="Dashboard per la gestione di un portafoglio immobiliare svizzero.">
+    <title>Portafoglio Immobiliare</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=DM+Serif+Display&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div class="app-shell">
-      <aside class="sidebar" aria-label="Primary navigation">
-        <a class="brand" href="#dashboard" aria-label="Haven home">
-          <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M4 11.5 12 4l8 7.5V21h-6v-6h-4v6H4z"/></svg>
-          </span>
-          <span>Haven</span>
+      <header class="app-header">
+        <a class="brand" href="#mainContent" aria-label="Vai alla dashboard">
+          <span class="brand-mark" aria-hidden="true">PI</span>
+          <span class="brand-copy"><strong>Portafoglio</strong><small>Immobiliare</small></span>
         </a>
-        <nav class="desktop-nav">
-          <button class="nav-item active" type="button" data-view="dashboard">
-            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg>
-            Dashboard
+        <div class="header-actions">
+          <button class="icon-button" id="themeButton" type="button" aria-label="Attiva tema scuro" title="Cambia tema">
+            <svg class="sun-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
+            <svg class="moon-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M20.5 15.2A8.5 8.5 0 0 1 8.8 3.5 8.5 8.5 0 1 0 20.5 15.2Z"/></svg>
           </button>
-          <button class="nav-item" type="button" data-view="properties">
-            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg>
-            Properties
+          <button class="secondary-button desktop-add" id="headerAddButton" type="button">
+            <span aria-hidden="true">+</span> Aggiungi immobile
           </button>
-        </nav>
-        <div class="sidebar-note">
-          <span class="note-icon">H</span>
-          <div><strong>Local portfolio</strong><small>Saved on this device</small></div>
+          <span class="account-chip" aria-label="Profilo di Andrea Bernasconi">AB</span>
         </div>
-      </aside>
+      </header>
 
-      <main>
-        <header class="topbar">
+      <main id="mainContent">
+        <nav class="view-tabs" aria-label="Sezioni principali" role="tablist">
+          <button class="view-tab active" id="portfolioTab" type="button" role="tab" aria-selected="true" aria-controls="portfolioView" data-view="portfolio">Portafoglio</button>
+          <button class="view-tab" id="analyticsTab" type="button" role="tab" aria-selected="false" aria-controls="analyticsView" data-view="analytics">Analisi</button>
+        </nav>
+
+        <div id="portfolioView" role="tabpanel" aria-labelledby="portfolioTab">
+        <section class="dashboard-heading" aria-labelledby="pageTitle">
           <div>
-            <p class="eyebrow" id="todayLabel"></p>
-            <h1 id="pageTitle">Good morning</h1>
+            <p class="eyebrow">Portafoglio · CH</p>
+            <h1 id="pageTitle">I tuoi immobili</h1>
+            <p class="heading-support" id="todayLabel"></p>
           </div>
-          <button class="avatar" type="button" aria-label="Account menu">AM</button>
-        </header>
+          <div class="monthly-income">
+            <span>Incasso mensile</span>
+            <strong id="monthlyIncome">CHF 0</strong>
+            <small id="incomeDelta">Canoni effettivi</small>
+          </div>
+        </section>
 
-        <section class="view active" id="dashboardView" aria-labelledby="pageTitle">
-          <article class="hero-card">
-            <div class="hero-copy">
-              <p class="eyebrow light">Portfolio overview</p>
-              <h2>Everything is<br>under one roof.</h2>
-              <p class="hero-support" id="heroSupport">Your rental portfolio at a glance.</p>
-              <button class="light-button" type="button" id="heroAddButton">
-                <span aria-hidden="true">+</span> Add property
-              </button>
-            </div>
-            <div class="hero-art" aria-hidden="true">
-              <span class="sun"></span>
-              <span class="building building-back"></span>
-              <span class="building building-front"></span>
-              <span class="tree tree-one"></span>
-              <span class="tree tree-two"></span>
-            </div>
+        <section class="summary-grid" aria-label="Riepilogo del portafoglio">
+          <article class="summary-card">
+            <span class="summary-label">Immobili totali</span>
+            <strong id="totalProperties">0</strong>
+            <small>nel portafoglio</small>
           </article>
-
-          <div class="stats-grid" aria-label="Portfolio statistics">
-            <article class="stat-card">
-              <span class="stat-icon forest"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 21h18M5 21V9l7-5 7 5v12"/></svg></span>
-              <div><p>Total properties</p><strong id="propertyCount">0</strong><small id="occupancyText">No properties yet</small></div>
-            </article>
-            <article class="stat-card">
-              <span class="stat-icon amber"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2v20M17 6.5c0-2-2-3.5-5-3.5S7 4.5 7 6.5 9 10 12 10s5 1.5 5 4-2 4-5 4-5-1.5-5-4"/></svg></span>
-              <div><p>Monthly rent</p><strong id="monthlyRent">$0</strong><small id="collectionText">$0 collected</small></div>
-            </article>
-          </div>
-
-          <section class="section-block">
-            <div class="section-heading">
-              <div><p class="eyebrow">Your portfolio</p><h2>Properties</h2></div>
-              <button class="text-button" type="button" data-view="properties">View all <span aria-hidden="true">→</span></button>
-            </div>
-            <div class="property-list" id="dashboardPropertyList"></div>
-          </section>
-
-          <section class="section-block">
-            <div class="section-heading">
-              <div><p class="eyebrow">This month</p><h2>Rent activity</h2></div>
-            </div>
-            <div class="activity-card" id="activityList"></div>
-          </section>
+          <article class="summary-card">
+            <span class="summary-label">Immobili sfitti</span>
+            <strong id="vacantProperties">0</strong>
+            <small id="vacancySummary">Nessuna criticità</small>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">Scadenze entro 90gg</span>
+            <strong id="expiringContracts">0</strong>
+            <small id="expirySummary">Nessuna scadenza</small>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">Rendimento portafoglio</span>
+            <strong id="portfolioYield">0.00%</strong>
+            <small>lordo attuale</small>
+          </article>
         </section>
 
-        <section class="view" id="propertiesView" aria-labelledby="propertiesHeading" hidden>
-          <div class="properties-header">
-            <div><p class="eyebrow">Your portfolio</p><h2 id="propertiesHeading">All properties</h2></div>
-            <button class="primary-button" type="button" id="addPropertyButton"><span aria-hidden="true">+</span> Add property</button>
+        <section class="portfolio-section" aria-labelledby="portfolioTitle">
+          <div class="section-header">
+            <div>
+              <h2 id="portfolioTitle">Portafoglio</h2>
+              <p id="portfolioCaption">Stato aggiornato a oggi</p>
+            </div>
+            <div class="list-tools">
+              <label class="search-field">
+                <span class="sr-only">Cerca immobili</span>
+                <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg>
+                <input id="searchInput" type="search" placeholder="Cerca indirizzo o città">
+              </label>
+              <label class="filter-field">
+                <span class="sr-only">Filtra per stato</span>
+                <select id="statusFilter">
+                  <option value="all">Tutti gli stati</option>
+                  <option value="green">Regolare</option>
+                  <option value="amber">Attenzione</option>
+                  <option value="red">Critico</option>
+                </select>
+              </label>
+            </div>
           </div>
-          <div class="toolbar">
-            <label class="search-field">
-              <span class="sr-only">Search properties</span>
-              <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg>
-              <input id="searchInput" type="search" placeholder="Search by name, city, or tenant">
-            </label>
-            <label class="filter-field">
-              <span class="sr-only">Filter properties</span>
-              <select id="statusFilter">
-                <option value="all">All properties</option>
-                <option value="occupied">Occupied</option>
-                <option value="vacant">Vacant</option>
-                <option value="overdue">Rent overdue</option>
-              </select>
-            </label>
+
+          <div class="property-table-header" aria-hidden="true">
+            <span>Immobile</span><span>Acquisto</span><span>Contratto / stato</span><span>Canone</span><span>Rendimento</span><span></span>
           </div>
-          <p class="result-count" id="resultCount" aria-live="polite"></p>
-          <div class="property-grid" id="allPropertyList"></div>
+          <div class="property-list" id="propertyList" aria-live="polite"></div>
         </section>
+        </div>
+
+        <div id="analyticsView" role="tabpanel" aria-labelledby="analyticsTab" hidden>
+          <section class="dashboard-heading analytics-heading" aria-labelledby="analyticsTitle">
+            <div>
+              <p class="eyebrow">Analisi · Portafoglio completo</p>
+              <h1 id="analyticsTitle">Statistiche finanziarie</h1>
+              <p class="heading-support">Indicatori calcolati dai dati correnti dei tuoi immobili</p>
+            </div>
+            <div class="analytics-asof"><span>Dati aggiornati</span><strong id="analyticsDate"></strong></div>
+          </section>
+
+          <section class="summary-grid analytics-summary" aria-label="Riepilogo finanziario">
+            <article class="summary-card"><span class="summary-label">Valore di acquisto</span><strong id="analysisTotalValue">CHF 0</strong><small>intero portafoglio</small></article>
+            <article class="summary-card"><span class="summary-label">Ipoteca totale</span><strong id="analysisMortgage">CHF 0</strong><small>capitale dichiarato</small></article>
+            <article class="summary-card"><span class="summary-label">Capitale proprio stimato</span><strong id="analysisEquity">CHF 0</strong><small>valore meno ipoteche</small></article>
+            <article class="summary-card"><span class="summary-label">Scarto canone mensile</span><strong id="analysisRentGap">CHF 0</strong><small>target meno effettivo</small></article>
+          </section>
+
+          <section class="analytics-grid">
+            <article class="analytics-card composition-card">
+              <header class="analytics-card-header"><div><p class="eyebrow">Composizione</p><h2>Valore del portafoglio</h2></div><span class="chart-unit">CHF</span></header>
+              <div class="donut-layout">
+                <div class="donut-wrap">
+                  <svg id="portfolioDonut" class="donut-chart" viewBox="0 0 220 220" role="img" aria-labelledby="donutTitle donutDescription">
+                    <title id="donutTitle">Composizione del valore del portafoglio</title>
+                    <desc id="donutDescription">Ripartizione del prezzo di acquisto totale tra gli immobili.</desc>
+                  </svg>
+                  <div class="donut-center" aria-hidden="true"><span>Totale</span><strong id="donutTotal">CHF 0</strong></div>
+                </div>
+                <div class="chart-legend" id="portfolioLegend"></div>
+              </div>
+            </article>
+
+            <article class="analytics-card deadlines-card">
+              <header class="analytics-card-header"><div><p class="eyebrow">Prossimi 90 giorni</p><h2>Scadenze contratti</h2></div><span class="chart-count" id="deadlineCount">0</span></header>
+              <div class="deadline-list" id="deadlinesList"></div>
+            </article>
+
+            <article class="analytics-card rent-gap-card">
+              <header class="analytics-card-header"><div><p class="eyebrow">Redditività</p><h2>Canone target vs effettivo</h2></div><div class="bar-legend" aria-label="Legenda"><span><i class="target-key"></i>Target</span><span><i class="actual-key"></i>Effettivo</span></div></header>
+              <div class="comparison-chart" id="rentGapChart"></div>
+            </article>
+
+            <article class="analytics-card ltv-card">
+              <header class="analytics-card-header"><div><p class="eyebrow">Esposizione</p><h2>Loan-to-value</h2></div><div class="aggregate-metric"><span>LTV portfolio</span><strong id="aggregateLtv">0.0%</strong></div></header>
+              <div class="ltv-chart" id="ltvChart"></div>
+              <footer class="chart-note"><span class="threshold-line"></span>Soglia di attenzione indicativa: 70%</footer>
+            </article>
+          </section>
+        </div>
       </main>
 
-      <nav class="bottom-nav" aria-label="Primary navigation">
-        <button class="nav-item active" type="button" data-view="dashboard">
-          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg>
-          <span>Home</span>
-        </button>
-        <button class="nav-item" type="button" data-view="properties">
-          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg>
-          <span>Properties</span>
-        </button>
-        <button class="nav-item add-nav-button" type="button" id="mobileAddButton" aria-label="Add property">
-          <span aria-hidden="true">+</span>
-        </button>
-      </nav>
+      <button class="mobile-add-button" id="mobileAddButton" type="button"><span aria-hidden="true">+</span><span>Aggiungi</span></button>
     </div>
+
+    <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+    <aside class="detail-drawer" id="detailDrawer" role="dialog" aria-modal="true" aria-labelledby="detailTitle" aria-hidden="true" inert>
+      <header class="drawer-header">
+        <div>
+          <p class="eyebrow">Dettaglio immobile</p>
+          <h2 id="detailTitle"></h2>
+          <p id="detailCity"></p>
+        </div>
+        <button class="icon-button" id="closeDrawerButton" type="button" aria-label="Chiudi dettaglio">×</button>
+      </header>
+      <div class="drawer-toolbar">
+        <span id="detailStatus"></span>
+        <button class="text-button" id="editPropertyButton" type="button">Modifica immobile</button>
+      </div>
+      <div class="drawer-content" id="drawerContent"></div>
+      <footer class="drawer-footer">
+        <button class="secondary-button" id="exportDocumentsButton" type="button">Esporta documenti</button>
+        <button class="primary-button" id="exportAccountantButton" type="button">Esporta per commercialista</button>
+      </footer>
+    </aside>
 
     <dialog id="propertyDialog" aria-labelledby="dialogTitle">
       <form id="propertyForm">
-        <div class="dialog-header">
-          <div><p class="eyebrow">Property details</p><h2 id="dialogTitle">Add a property</h2></div>
-          <button class="icon-button" type="button" id="closeDialogButton" aria-label="Close form">×</button>
-        </div>
-        <input type="hidden" id="propertyId">
-        <div class="form-grid">
-          <label class="field full"><span>Property name</span><input id="nameInput" name="name" required maxlength="60" placeholder="e.g. Willow House"></label>
-          <label class="field full"><span>Address</span><input id="addressInput" name="address" required maxlength="100" placeholder="Street, city"></label>
-          <label class="field"><span>Type</span><select id="typeInput" name="type"><option>Apartment</option><option>House</option><option>Studio</option><option>Townhouse</option></select></label>
-          <label class="field"><span>Monthly rent</span><span class="money-input"><span>$</span><input id="rentInput" name="rent" type="number" required min="0" step="1" placeholder="1800"></span></label>
-          <label class="field"><span>Occupancy</span><select id="occupancyInput" name="occupancy"><option value="occupied">Occupied</option><option value="vacant">Vacant</option></select></label>
-          <label class="field"><span>Rent status</span><select id="rentStatusInput" name="rentStatus"><option value="paid">Paid</option><option value="pending">Pending</option><option value="overdue">Overdue</option></select></label>
-          <label class="field full"><span>Tenant name <small>(optional)</small></span><input id="tenantInput" name="tenant" maxlength="60" placeholder="Tenant name"></label>
-          <label class="field full"><span>Photo URL <small>(optional)</small></span><input id="imageInput" name="image" type="url" placeholder="https://example.com/property.jpg"></label>
-        </div>
-        <div class="dialog-actions">
-          <button class="secondary-button" type="button" id="cancelDialogButton">Cancel</button>
-          <button class="primary-button" type="submit">Save property</button>
-        </div>
+        <header class="dialog-header">
+          <div><p class="eyebrow">Dati immobile</p><h2 id="dialogTitle">Aggiungi immobile</h2></div>
+          <button class="icon-button" id="closeDialogButton" type="button" aria-label="Chiudi modulo">×</button>
+        </header>
+        <input id="propertyId" type="hidden">
+
+        <fieldset>
+          <legend>Immobile</legend>
+          <div class="form-grid">
+            <label class="field full"><span>Indirizzo</span><input id="streetInput" required maxlength="100" placeholder="Via Cantonale 12"></label>
+            <label class="field"><span>CAP</span><input id="postalCodeInput" required inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="6900"></label>
+            <label class="field"><span>Città</span><input id="cityInput" required maxlength="60" placeholder="Lugano"></label>
+            <label class="field"><span>Data di acquisto</span><input id="purchaseDateInput" required type="date"></label>
+            <label class="field"><span>Prezzo di acquisto (CHF)</span><input id="purchasePriceInput" required type="number" min="0" step="1000"></label>
+            <label class="field"><span>Canone target mensile</span><input id="targetRentInput" required type="number" min="0" step="10"></label>
+            <label class="field"><span>Stato</span><select id="occupancyInput"><option value="occupied">Occupato</option><option value="vacant">Sfitto</option></select></label>
+            <label class="field"><span>Numero PPP</span><input id="pppNumberInput" maxlength="30"></label>
+            <label class="field"><span>Numero foglio PPP</span><input id="pppSheetInput" maxlength="30"></label>
+            <label class="field"><span>Anno di costruzione</span><input id="constructionYearInput" type="number" min="1800" max="2100"></label>
+            <label class="field"><span>Anno di ristrutturazione</span><input id="renovationYearInput" type="number" min="1800" max="2100"></label>
+          </div>
+        </fieldset>
+
+        <fieldset id="leaseFields">
+          <legend>Contratto di locazione</legend>
+          <div class="form-grid">
+            <label class="field"><span>Tipo contratto</span><select id="leaseTypeInput"><option value="open">Indeterminato</option><option value="fixed">Determinato</option></select></label>
+            <label class="field"><span>Nome inquilino</span><input id="tenantInput" maxlength="80"></label>
+            <label class="field"><span>Data inizio</span><input id="leaseStartInput" type="date"></label>
+            <label class="field" id="leaseEndField"><span>Data fine</span><input id="leaseEndInput" type="date"></label>
+            <label class="field"><span>Canone effettivo (CHF)</span><input id="actualRentInput" type="number" min="0" step="10"></label>
+          </div>
+        </fieldset>
+
+        <fieldset id="vacancyFields" hidden>
+          <legend>Periodo di sfitto</legend>
+          <div class="form-grid"><label class="field"><span>Data inizio sfitto</span><input id="vacancyStartInput" type="date"></label></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Ipoteca e amministrazione</legend>
+          <div class="form-grid">
+            <label class="field"><span>Importo ipoteca (CHF)</span><input id="mortgageAmountInput" type="number" min="0" step="1000"></label>
+            <label class="field"><span>Tasso ipoteca (%)</span><input id="mortgageRateInput" type="number" min="0" max="20" step="0.01"></label>
+            <label class="field"><span>Scadenza ipoteca</span><input id="mortgageExpiryInput" type="date"></label>
+            <label class="field"><span>Fondo rinnovamento (CHF)</span><input id="renovationFundInput" type="number" min="0" step="100"></label>
+            <label class="field"><span>Prossima assemblea</span><input id="nextMeetingInput" type="date"></label>
+          </div>
+        </fieldset>
+
+        <footer class="dialog-actions">
+          <button class="danger-button" id="deletePropertyButton" type="button" hidden>Elimina</button>
+          <span class="action-spacer"></span>
+          <button class="secondary-button" id="cancelDialogButton" type="button">Annulla</button>
+          <button class="primary-button" type="submit">Salva immobile</button>
+        </footer>
       </form>
     </dialog>
 
+    <input id="attachmentInput" type="file" hidden>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="app.js"></script>
   </body>
