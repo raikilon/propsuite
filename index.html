@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#173f35">
+    <meta name="description" content="A simple local property management dashboard.">
+    <title>Haven Property Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=DM+Serif+Display&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Primary navigation">
+        <a class="brand" href="#dashboard" aria-label="Haven home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 11.5 12 4l8 7.5V21h-6v-6h-4v6H4z"/></svg>
+          </span>
+          <span>Haven</span>
+        </a>
+        <nav class="desktop-nav">
+          <button class="nav-item active" type="button" data-view="dashboard">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg>
+            Dashboard
+          </button>
+          <button class="nav-item" type="button" data-view="properties">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg>
+            Properties
+          </button>
+        </nav>
+        <div class="sidebar-note">
+          <span class="note-icon">H</span>
+          <div><strong>Local portfolio</strong><small>Saved on this device</small></div>
+        </div>
+      </aside>
+
+      <main>
+        <header class="topbar">
+          <div>
+            <p class="eyebrow" id="todayLabel"></p>
+            <h1 id="pageTitle">Good morning</h1>
+          </div>
+          <button class="avatar" type="button" aria-label="Account menu">AM</button>
+        </header>
+
+        <section class="view active" id="dashboardView" aria-labelledby="pageTitle">
+          <article class="hero-card">
+            <div class="hero-copy">
+              <p class="eyebrow light">Portfolio overview</p>
+              <h2>Everything is<br>under one roof.</h2>
+              <p class="hero-support" id="heroSupport">Your rental portfolio at a glance.</p>
+              <button class="light-button" type="button" id="heroAddButton">
+                <span aria-hidden="true">+</span> Add property
+              </button>
+            </div>
+            <div class="hero-art" aria-hidden="true">
+              <span class="sun"></span>
+              <span class="building building-back"></span>
+              <span class="building building-front"></span>
+              <span class="tree tree-one"></span>
+              <span class="tree tree-two"></span>
+            </div>
+          </article>
+
+          <div class="stats-grid" aria-label="Portfolio statistics">
+            <article class="stat-card">
+              <span class="stat-icon forest"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 21h18M5 21V9l7-5 7 5v12"/></svg></span>
+              <div><p>Total properties</p><strong id="propertyCount">0</strong><small id="occupancyText">No properties yet</small></div>
+            </article>
+            <article class="stat-card">
+              <span class="stat-icon amber"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2v20M17 6.5c0-2-2-3.5-5-3.5S7 4.5 7 6.5 9 10 12 10s5 1.5 5 4-2 4-5 4-5-1.5-5-4"/></svg></span>
+              <div><p>Monthly rent</p><strong id="monthlyRent">$0</strong><small id="collectionText">$0 collected</small></div>
+            </article>
+          </div>
+
+          <section class="section-block">
+            <div class="section-heading">
+              <div><p class="eyebrow">Your portfolio</p><h2>Properties</h2></div>
+              <button class="text-button" type="button" data-view="properties">View all <span aria-hidden="true">→</span></button>
+            </div>
+            <div class="property-list" id="dashboardPropertyList"></div>
+          </section>
+
+          <section class="section-block">
+            <div class="section-heading">
+              <div><p class="eyebrow">This month</p><h2>Rent activity</h2></div>
+            </div>
+            <div class="activity-card" id="activityList"></div>
+          </section>
+        </section>
+
+        <section class="view" id="propertiesView" aria-labelledby="propertiesHeading" hidden>
+          <div class="properties-header">
+            <div><p class="eyebrow">Your portfolio</p><h2 id="propertiesHeading">All properties</h2></div>
+            <button class="primary-button" type="button" id="addPropertyButton"><span aria-hidden="true">+</span> Add property</button>
+          </div>
+          <div class="toolbar">
+            <label class="search-field">
+              <span class="sr-only">Search properties</span>
+              <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg>
+              <input id="searchInput" type="search" placeholder="Search by name, city, or tenant">
+            </label>
+            <label class="filter-field">
+              <span class="sr-only">Filter properties</span>
+              <select id="statusFilter">
+                <option value="all">All properties</option>
+                <option value="occupied">Occupied</option>
+                <option value="vacant">Vacant</option>
+                <option value="overdue">Rent overdue</option>
+              </select>
+            </label>
+          </div>
+          <p class="result-count" id="resultCount" aria-live="polite"></p>
+          <div class="property-grid" id="allPropertyList"></div>
+        </section>
+      </main>
+
+      <nav class="bottom-nav" aria-label="Primary navigation">
+        <button class="nav-item active" type="button" data-view="dashboard">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg>
+          <span>Home</span>
+        </button>
+        <button class="nav-item" type="button" data-view="properties">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg>
+          <span>Properties</span>
+        </button>
+        <button class="nav-item add-nav-button" type="button" id="mobileAddButton" aria-label="Add property">
+          <span aria-hidden="true">+</span>
+        </button>
+      </nav>
+    </div>
+
+    <dialog id="propertyDialog" aria-labelledby="dialogTitle">
+      <form id="propertyForm">
+        <div class="dialog-header">
+          <div><p class="eyebrow">Property details</p><h2 id="dialogTitle">Add a property</h2></div>
+          <button class="icon-button" type="button" id="closeDialogButton" aria-label="Close form">×</button>
+        </div>
+        <input type="hidden" id="propertyId">
+        <div class="form-grid">
+          <label class="field full"><span>Property name</span><input id="nameInput" name="name" required maxlength="60" placeholder="e.g. Willow House"></label>
+          <label class="field full"><span>Address</span><input id="addressInput" name="address" required maxlength="100" placeholder="Street, city"></label>
+          <label class="field"><span>Type</span><select id="typeInput" name="type"><option>Apartment</option><option>House</option><option>Studio</option><option>Townhouse</option></select></label>
+          <label class="field"><span>Monthly rent</span><span class="money-input"><span>$</span><input id="rentInput" name="rent" type="number" required min="0" step="1" placeholder="1800"></span></label>
+          <label class="field"><span>Occupancy</span><select id="occupancyInput" name="occupancy"><option value="occupied">Occupied</option><option value="vacant">Vacant</option></select></label>
+          <label class="field"><span>Rent status</span><select id="rentStatusInput" name="rentStatus"><option value="paid">Paid</option><option value="pending">Pending</option><option value="overdue">Overdue</option></select></label>
+          <label class="field full"><span>Tenant name <small>(optional)</small></span><input id="tenantInput" name="tenant" maxlength="60" placeholder="Tenant name"></label>
+          <label class="field full"><span>Photo URL <small>(optional)</small></span><input id="imageInput" name="image" type="url" placeholder="https://example.com/property.jpg"></label>
+        </div>
+        <div class="dialog-actions">
+          <button class="secondary-button" type="button" id="cancelDialogButton">Cancel</button>
+          <button class="primary-button" type="submit">Save property</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
